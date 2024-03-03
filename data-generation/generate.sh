@@ -45,11 +45,12 @@ do
     #gzip -v $file
     gzip -c $file > $file.csv.gz
     rm $file
-    file = $file.csv.gz
+    file=$file.csv.gz
+    file_name=$(basename -- "$file")
 
     # Copy files to S3
-    echo aws s3 cp $file s3://$S3_BUCKET/sf$SCALE_FACTOR/$table/$file_name.csv
-    aws s3 cp $file s3://$S3_BUCKET/sf$SCALE_FACTOR/$table/$file_name.csv
+    echo aws s3 cp $file s3://$S3_BUCKET/sf$SCALE_FACTOR/$table/$file_name
+    aws s3 cp $file s3://$S3_BUCKET/sf$SCALE_FACTOR/$table/$file_name
 
     # Delete file after upload
     rm $file
