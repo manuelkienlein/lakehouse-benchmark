@@ -1,5 +1,8 @@
 use schema TPC_H_SF1000.PUBLIC;
 
+-- Disable cache for performance testing
+ALTER SESSION SET USE_CACHED_RESULT=FALSE;
+
 -- TPC-H 1
 select
 	l_returnflag,
