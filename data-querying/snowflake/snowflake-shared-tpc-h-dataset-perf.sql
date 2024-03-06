@@ -1,6 +1,10 @@
 use schema snowflake_sample_data.tpch_sf100;
 -- or tpch_sf100, tpch_sf1000
 
+-- Snowflake provides already some pre loaded TPC-H and TPC-DS data sets.
+-- This script will use them for it's performance test.
+-- Query 15 needs a separate database to create its view, because the shared data set is read-only.
+
 -- TPC-H 1
 select
 	l_returnflag,
