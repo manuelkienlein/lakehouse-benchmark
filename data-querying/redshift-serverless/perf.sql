@@ -1,11 +1,4 @@
-
---set session spill_enabled = true;
-
-
--- Select schema
-use tpc_h_sf1000_glue;
-
--- TPC-H 1
+/* TPC-H Q1 */
 select
 	l_returnflag,
 	l_linestatus,
@@ -20,7 +13,7 @@ select
 from
 	lineitem
 where
-	l_shipdate <= date '1998-12-01' - interval '90' day
+	l_shipdate <= dateadd(day, -90, cast('1998-12-01' as date))
 group by
 	l_returnflag,
 	l_linestatus
@@ -28,8 +21,8 @@ order by
 	l_returnflag,
 	l_linestatus;
 
--- TPC-H 2
-select
+/* TPC-H Q2 */
+select /* TPC-H Q2 */
 	s_acctbal,
 	s_name,
 	n_name,
@@ -74,8 +67,8 @@ order by
 	p_partkey
 limit 100;
 
--- TPC-H 3
-select
+/* TPC-H Q3 */
+select /* TPC-H Q3 */
 	l_orderkey,
 	sum(l_extendedprice * (1 - l_discount)) as revenue,
 	o_orderdate,
@@ -99,15 +92,15 @@ order by
 	o_orderdate
 limit 10;
 
--- TPC-H 4
-select
+/* TPC-H Q4 */
+select /* TPC-H Q4 */
 	o_orderpriority,
 	count(*) as order_count
 from
 	orders
 where
 	o_orderdate >= date '1993-07-01'
-	and o_orderdate < date '1993-07-01' + interval '3' month
+	and o_orderdate < dateadd(month, 3, cast('1993-07-01' as date))
 	and exists (
 		select
 			*
@@ -122,8 +115,8 @@ group by
 order by
 	o_orderpriority;
 
--- TPC-H 5
-select
+/* TPC-H Q5 */
+select /* TPC-H Q5 */
 	n_name,
 	sum(l_extendedprice * (1 - l_discount)) as revenue
 from
@@ -142,25 +135,25 @@ where
 	and n_regionkey = r_regionkey
 	and r_name = 'ASIA'
 	and o_orderdate >= date '1994-01-01'
-	and o_orderdate < date '1994-01-01' + interval '1' year
+	and o_orderdate < dateadd(year, 1, cast('1994-01-01' as date))
 group by
 	n_name
 order by
 	revenue desc;
 
--- TPC-H 6
-select
+/* TPC-H Q6 */
+select /* TPC-H Q6 */
 	sum(l_extendedprice * l_discount) as revenue
 from
 	lineitem
 where
 	l_shipdate >= date '1994-01-01'
-	and l_shipdate < date '1994-01-01' + interval '1' year
+	and l_shipdate < dateadd(year, 1, cast('1994-01-01' as date))
 	and l_discount between .06 - 0.01 and .06 + 0.01
 	and l_quantity < 24;
 
--- TPC-H 7
-select
+/* TPC-H Q7 */
+select /* TPC-H Q7 */
 	supp_nation,
 	cust_nation,
 	l_year,
@@ -200,8 +193,8 @@ order by
 	cust_nation,
 	l_year;
 
--- TPC-H 8
-select
+/* TPC-H Q8 */
+select /* TPC-H Q8 */
 	o_year,
 	sum(case
 		when nation = 'BRAZIL' then volume
@@ -239,8 +232,8 @@ group by
 order by
 	o_year;
 
--- TPC-H 9
-select
+/* TPC-H Q9 */
+select /* TPC-H Q9 */
 	nation,
 	o_year,
 	sum(amount) as sum_profit
@@ -273,8 +266,8 @@ order by
 	nation,
 	o_year desc;
 
--- TPC-H 10
-select
+/* TPC-H Q10 */
+select /* TPC-H Q10 */
 	c_custkey,
 	c_name,
 	sum(l_extendedprice * (1 - l_discount)) as revenue,
@@ -292,7 +285,7 @@ where
 	c_custkey = o_custkey
 	and l_orderkey = o_orderkey
 	and o_orderdate >= date '1993-10-01'
-	and o_orderdate < date '1993-10-01' + interval '3' month
+	and o_orderdate < dateadd(month, 3, cast('1993-10-01' as date))
 	and l_returnflag = 'R'
 	and c_nationkey = n_nationkey
 group by
@@ -307,8 +300,8 @@ order by
 	revenue desc
 limit 20;
 
--- TPC-H 11
-select
+/* TPC-H Q11 */
+select /* TPC-H Q11 */
 	ps_partkey,
 	sum(ps_supplycost * ps_availqty) as value
 from
@@ -323,7 +316,7 @@ group by
 	ps_partkey having
 		sum(ps_supplycost * ps_availqty) > (
 			select
-				sum(ps_supplycost * ps_availqty) * 0.0001000000
+				sum(ps_supplycost * ps_availqty) * 0.0000000333
 			from
 				partsupp,
 				supplier,
@@ -336,8 +329,8 @@ group by
 order by
 	value desc;
 
--- TPC-H 12
-select
+/* TPC-H Q12 */
+select /* TPC-H Q12 */
 	l_shipmode,
 	sum(case
 		when o_orderpriority = '1-URGENT'
@@ -360,14 +353,14 @@ where
 	and l_commitdate < l_receiptdate
 	and l_shipdate < l_commitdate
 	and l_receiptdate >= date '1994-01-01'
-	and l_receiptdate < date '1994-01-01' + interval '1' year
+	and l_receiptdate < dateadd(year, 1, cast('1994-01-01' as date))
 group by
 	l_shipmode
 order by
 	l_shipmode;
 
--- TPC-H 13
-select
+/* TPC-H Q13 */
+select /* TPC-H Q13 */
 	c_count,
 	count(*) as custdist
 from
@@ -388,8 +381,8 @@ order by
 	custdist desc,
 	c_count desc;
 
--- TPC-H 14
-select
+/* TPC-H Q14 */
+select /* TPC-H Q14 */
 	100.00 * sum(case
 		when p_type like 'PROMO%'
 			then l_extendedprice * (1 - l_discount)
@@ -401,22 +394,23 @@ from
 where
 	l_partkey = p_partkey
 	and l_shipdate >= date '1995-09-01'
-	and l_shipdate < date '1995-09-01' + interval '1' month;
+	and l_shipdate < dateadd(month, 1, cast('1995-09-01' as date))
+;
 
--- TPC-H 15
+/* TPC-H Q15 */
 with revenue as (
-    select
-        l_suppkey as supplier_no,
-        sum(l_extendedprice * (1 - l_discount)) as total_revenue
-    from
-        lineitem
-    where
-        l_shipdate >= date '1996-01-01'
-		and l_shipdate < date '1996-01-01' + interval '3' month
-    group by
-        l_suppkey
+		select
+			l_suppkey as supplier_no,
+			sum(l_extendedprice * (1-l_discount)) as total_revenue
+		from
+			lineitem
+		where
+			l_shipdate >= date '1996-01-01'
+			and l_shipdate < dateadd(month, 3, cast('1996-01-01' as date))
+		group by
+			l_suppkey
 )
-select
+select /* TPC-H Q15 */
 	s_suppkey,
 	s_name,
 	s_address,
@@ -436,8 +430,8 @@ where
 order by
 	s_suppkey;
 
--- TPC-H 16
-select
+/* TPC-H Q16 */
+select /* TPC-H Q16 */
 	p_brand,
 	p_type,
 	p_size,
@@ -468,8 +462,8 @@ order by
 	p_type,
 	p_size;
 
--- TPC-H 17
-select
+/* TPC-H Q17 */
+select /* TPC-H Q17 */
 	sum(l_extendedprice) / 7.0 as avg_yearly
 from
 	lineitem,
@@ -487,8 +481,8 @@ where
 			l_partkey = p_partkey
 	);
 
--- TPC-H 18
-select
+/* TPC-H Q18 */
+select /* TPC-H Q18 */
 	c_name,
 	c_custkey,
 	o_orderkey,
@@ -522,8 +516,8 @@ order by
 	o_orderdate
 limit 100;
 
--- TPC-H 19
-select
+/* TPC-H Q19 */
+select /* TPC-H Q19 */
 	sum(l_extendedprice* (1 - l_discount)) as revenue
 from
 	lineitem,
@@ -559,8 +553,8 @@ where
 		and l_shipinstruct = 'DELIVER IN PERSON'
 	);
 
--- TPC-H 20
-select
+/* TPC-H Q20 */
+select /* TPC-H Q20 */
 	s_name,
 	s_address
 from
@@ -590,7 +584,7 @@ where
 					l_partkey = ps_partkey
 					and l_suppkey = ps_suppkey
 					and l_shipdate >= date '1994-01-01'
-					and l_shipdate < date '1994-01-01' + interval '1' year
+					and l_shipdate < dateadd(year, 1, cast('1994-01-01' as date))
 			)
 	)
 	and s_nationkey = n_nationkey
@@ -598,8 +592,8 @@ where
 order by
 	s_name;
 
--- TPC-H 21
-select
+/* TPC-H Q21 */
+select /* TPC-H Q21 */
 	s_name,
 	count(*) as numwait
 from
@@ -640,20 +634,20 @@ order by
 	s_name
 limit 100;
 
--- TPC-H 22
-select
+/* TPC-H Q22 */
+select /* TPC-H Q22 */
 	cntrycode,
 	count(*) as numcust,
 	sum(c_acctbal) as totacctbal
 from
 	(
 		select
-			substring(c_phone from 1 for 2) as cntrycode,
+			substring(c_phone,1,2) as cntrycode,
 			c_acctbal
 		from
 			customer
 		where
-			substring(c_phone from 1 for 2) in
+			substring(c_phone,1,2) in
 				('13', '31', '23', '29', '30', '18', '17')
 			and c_acctbal > (
 				select
@@ -662,7 +656,7 @@ from
 					customer
 				where
 					c_acctbal > 0.00
-					and substring(c_phone from 1 for 2) in
+					and substring(c_phone,1,2) in
 						('13', '31', '23', '29', '30', '18', '17')
 			)
 			and not exists (

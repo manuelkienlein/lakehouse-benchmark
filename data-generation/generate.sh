@@ -23,7 +23,9 @@ PARTITIONS=5
 
 DBGEN_PATH=./dbgen
 
-S3_BUCKET=tpc-h-benchmark
+S3_BUCKET=tpc-h-dataset
+export AWS_ACCESS_KEY_ID=key
+export AWS_SECRET_ACCESS_KEY=secret
 
 
 for (( i=0; i<=$PARTITIONS; i++ ))
@@ -50,7 +52,7 @@ do
 
     # Copy files to S3
     echo aws s3 cp $file s3://$S3_BUCKET/sf$SCALE_FACTOR/$table/$file_name
-    aws s3 cp $file s3://$S3_BUCKET/sf$SCALE_FACTOR/$table/$file_name
+    #aws s3 cp $file s3://$S3_BUCKET/sf$SCALE_FACTOR/$table/$file_name
 
     # Delete file after upload
     rm $file
